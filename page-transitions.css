@@ -1,0 +1,105 @@
+/* Page Transitions CSS */
+:root {
+  --transition-speed: 0.4s;
+}
+
+/* Base page transition styles */
+body {
+  opacity: 1;
+  animation: fadeIn var(--transition-speed) ease;
+}
+
+.landing-container,
+.app-container {
+  animation: slideUp 0.5s ease;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animated elements */
+.hero-section h1,
+.hero-section .tagline,
+.cta-container,
+.chat-preview {
+  opacity: 0;
+  animation: fadeSlideUp 0.6s ease forwards;
+}
+
+.hero-section h1 {
+  animation-delay: 0.1s;
+}
+
+.hero-section .tagline {
+  animation-delay: 0.2s;
+}
+
+.cta-container {
+  animation-delay: 0.3s;
+}
+
+.chat-preview {
+  animation-delay: 0.4s;
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Dashboard animation */
+.sidebar-container,
+.chat-container {
+  opacity: 0;
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.sidebar-container {
+  animation-delay: 0.1s;
+  animation-name: slideInLeft;
+}
+
+.chat-container {
+  animation-delay: 0.2s;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Page exit transitions */
+.page-exit {
+  opacity: 0;
+  transition: opacity var(--transition-speed) ease;
+}

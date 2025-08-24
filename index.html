@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="el" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ελληνικό Chatbot - Συνομιλήστε στα ελληνικά ή αγγλικά με ένα προηγμένο AI">
+    <meta name="theme-color" content="#10a37f">
+    <title>Ελληνικό Chatbot</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="page-transitions.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Greek:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Libraries for advanced formatting -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.8.0/styles/github.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/marked@9.0.3/marked.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/highlight.js@11.8.0/lib/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" integrity="sha256-aGRwNq3w/a1LTGOK4uKH5TRSH9Y0aXQ4tG9LmVzWaYA=" crossorigin="anonymous" defer></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar overlay for mobile -->    
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
+        
+        <!-- Sidebar -->
+        <aside class="sidebar" aria-label="Chat history sidebar">
+            <div class="sidebar-header">
+                <button class="new-chat-btn" id="new-chat-btn" aria-label="Start new chat">
+                    <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                    <span>Νέα συζήτηση</span>
+                </button>
+                
+                <div class="search-container">
+                    <div class="search-input-wrapper">
+                        <input type="text" id="chat-search" placeholder="Αναζήτηση συνομιλιών..." aria-label="Search conversations">
+                        <button id="clear-search" class="clear-search-btn" aria-label="Clear search">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="chat-history" id="chat-history" aria-label="Previous conversations">
+                <!-- Chat history items will be dynamically inserted here -->
+                <div class="empty-history-message" id="empty-history-message">
+                    <i class="fa-regular fa-comment-dots" aria-hidden="true"></i>
+                    <p>Οι συνομιλίες σας θα εμφανίζονται εδώ</p>
+                </div>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <i class="fa-solid fa-user" aria-hidden="true"></i>
+                    <span>Χρήστης</span>
+                </div>
+                <div class="sidebar-actions">
+                    <a href="landing.html" class="home-btn" title="Επιστροφή στην αρχική σελίδα">
+                        <i class="fa-solid fa-house" aria-hidden="true"></i>
+                    </a>
+                    <button class="settings-btn" id="settings-btn" aria-label="Άνοιγμα ρυθμίσεων">
+                        <i class="fa-solid fa-gear" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="chat-container">
+            <header class="chat-header">
+                <div class="header-left">
+                    <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
+                        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                    </button>
+                    <div class="header-logo">
+                        <i class="fa-solid fa-comment-dots"></i>
+                        <span>Ελληνικό Chatbot</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="model-info" title="AI Model in use">
+                        <span>Moonshot AI Kimi-K2</span>
+                    </div>
+                    <button class="theme-toggle-btn" id="theme-toggle" aria-label="Toggle dark mode">
+                        <i class="fa-solid fa-moon" id="theme-icon" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </header>
+
+            <section class="chat-messages" id="chat-messages" aria-live="polite">
+                <div class="welcome-message">
+                    <h1>Ελληνικό Chatbot</h1>
+                    <p>Ρωτήστε οτιδήποτε στα ελληνικά ή αγγλικά</p>
+                    <div class="example-prompts">
+                        <button class="prompt-btn" aria-label="Use this example prompt">
+                            <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+                            <span>Εξήγησέ μου την ιστορία της αρχαίας Ελλάδας</span>
+                        </button>
+                        <button class="prompt-btn" aria-label="Use this example prompt">
+                            <i class="fa-solid fa-utensils" aria-hidden="true"></i>
+                            <span>Γράψε μια συνταγή για παραδοσιακό μουσακά</span>
+                        </button>
+                        <button class="prompt-btn" aria-label="Use this example prompt">
+                            <i class="fa-solid fa-robot" aria-hidden="true"></i>
+                            <span>Τι είναι η τεχνητή νοημοσύνη και πώς λειτουργεί;</span>
+                        </button>
+                        <button class="prompt-btn" aria-label="Use this example prompt">
+                            <i class="fa-solid fa-umbrella-beach" aria-hidden="true"></i>
+                            <span>Προτείνε μέρη για διακοπές στην Ελλάδα</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="chat-input-container">
+                <form class="input-wrapper" id="chat-form">
+                    <textarea 
+                        id="message-input" 
+                        placeholder="Γράψτε ένα μήνυμα..." 
+                        rows="1"
+                        aria-label="Type your message"
+                    ></textarea>
+                    <button type="submit" class="send-btn" id="send-btn" disabled aria-label="Send message">
+                        <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+                    </button>
+                </form>
+                <div class="input-footer">
+                    <small>Πληκτρολογήστε <kbd>/</kbd> για προτεινόμενες ερωτήσεις</small>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Settings Modal (Simplified) -->
+    <div id="settings-modal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="settings-title">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="settings-title">Ρυθμίσεις</h2>
+                <button id="close-settings" class="close" aria-label="Close settings">&times;</button>
+            </div>
+            
+            <div class="modal-tabs">
+                <button class="tab-btn active" id="tab-general" data-tab="general">Γενικά</button>
+                <button class="tab-btn" id="tab-appearance" data-tab="appearance">Εμφάνιση</button>
+                <button class="tab-btn" id="tab-chat" data-tab="chat">Συνομιλία</button>
+                <button class="tab-btn" id="tab-api" data-tab="api">API</button>
+            </div>
+            
+            <div class="modal-body">
+                <!-- General Settings Tab -->
+                <div class="tab-content active" id="general-tab">
+                    <div class="settings-section">
+                        <label for="language-preference">Γλώσσα / Language:</label>
+                        <select id="language-preference" aria-label="Επιλογή γλώσσας">
+                            <option value="el">Ελληνικά</option>
+                            <option value="en">English</option>
+                        </select>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h3>Πληροφορίες μοντέλου</h3>
+                        <div class="model-info-text">
+                            <i class="fa-solid fa-robot" aria-hidden="true"></i>
+                            <p>Η εφαρμογή χρησιμοποιεί το μοντέλο <strong>Moonshot AI Kimi-K2</strong>, μια ισχυρή τεχνητή νοημοσύνη για επεξεργασία φυσικής γλώσσας.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <label for="auto-clear-chats">Αυτόματη εκκαθάριση ιστορικού:</label>
+                        <div class="toggle-switch-container">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="auto-clear-chats">
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <span class="toggle-label">Εκκαθάριση συνομιλιών παλαιότερων των 30 ημερών</span>
+                        </div>
+                        <button id="save-general" class="save-btn">Αποθήκευση</button>
+                    </div>
+                </div>
+                
+                <!-- Appearance Settings Tab -->
+                <div class="tab-content" id="appearance-tab">
+                    <div class="settings-section">
+                        <label for="theme-preference">Θέμα / Theme:</label>
+                        <select id="theme-preference" aria-label="Επιλογή θέματος">
+                            <option value="light">Φωτεινό (Light)</option>
+                            <option value="dark">Σκοτεινό (Dark)</option>
+                            <option value="auto">Αυτόματο (System)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <label for="font-size">Μέγεθος γραμματοσειράς:</label>
+                        <div class="range-slider-container">
+                            <input type="range" id="font-size" min="12" max="20" value="16" class="range-slider">
+                            <span class="range-value" id="font-size-value">16px</span>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <label>Στυλ συνομιλίας:</label>
+                        <div class="chat-style-options">
+                            <div class="chat-style-option" id="style-rounded" data-style="rounded">
+                                <div class="style-preview rounded-preview"></div>
+                                <span>Στρογγυλεμένο</span>
+                            </div>
+                            <div class="chat-style-option" id="style-modern" data-style="modern">
+                                <div class="style-preview modern-preview"></div>
+                                <span>Μοντέρνο</span>
+                            </div>
+                            <div class="chat-style-option" id="style-classic" data-style="classic">
+                                <div class="style-preview classic-preview"></div>
+                                <span>Κλασικό</span>
+                            </div>
+                        </div>
+                        <input type="hidden" id="chat-style" value="rounded">
+                        <button id="save-appearance" class="save-btn">Αποθήκευση</button>
+                    </div>
+                </div>
+                
+                <!-- Chat Settings Tab -->
+                <div class="tab-content" id="chat-tab">
+                    <div class="settings-section">
+                        <label for="show-timestamps">Χρονοσφραγίδες:</label>
+                        <div class="toggle-switch-container">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="show-timestamps">
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <span class="toggle-label">Εμφάνιση χρονοσφραγίδων μηνυμάτων</span>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <label for="enable-sounds">Ήχοι μηνυμάτων:</label>
+                        <div class="toggle-switch-container">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="enable-sounds">
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <span class="toggle-label">Αναπαραγωγή ήχου για νέα μηνύματα</span>
+                        </div>
+                        <button id="save-chat-settings" class="save-btn">Αποθήκευση</button>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <label>Συντομεύσεις πληκτρολογίου:</label>
+                        <div class="shortcuts-list">
+                            <div class="shortcut-item">
+                                <kbd>Enter</kbd> <span>Αποστολή μηνύματος</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <kbd>Shift</kbd> + <kbd>Enter</kbd> <span>Νέα γραμμή</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <kbd>Esc</kbd> <span>Κλείσιμο παραθύρων</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <kbd>/</kbd> <span>Προτεινόμενες ερωτήσεις</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- API Settings Tab -->
+                <div class="tab-content" id="api-tab">
+                    <div class="settings-section">
+                        <label for="api-key">OpenRouter API Key:</label>
+                        <div class="api-key-input">
+                            <input type="password" id="api-key" placeholder="sk-or-v1-..." autocomplete="off" />
+                            <button id="toggle-api-key" class="toggle-password" aria-label="Εμφάνιση ή απόκρυψη του API key">
+                                <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <p class="api-key-info">Απαιτείται για τη σύνδεση με τα μοντέλα AI. <a href="https://openrouter.ai/keys" target="_blank" rel="noopener noreferrer">Αποκτήστε κλειδί API</a></p>
+                        <button id="save-api-key" class="save-btn">Αποθήκευση</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script_complete.js"></script>
+</body>
+</html>
